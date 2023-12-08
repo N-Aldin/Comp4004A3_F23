@@ -2174,6 +2174,125 @@ public class AcceptanceTest {
         gd.setTopCard(game.startGame(gd.getCards(), gd.getPlayers()));
     }
 
+
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    @DisplayName("p1 plays 2C, p2 has {4C, 4S} then p2 plays 4C and 4S and ends round (because p2 played all their cards)")
+    public void TestRow57() throws InterruptedException {
+        rigTestRow57();
+
+        String[] p1Hand = {"5D", "7S", "KC", "2C", "3H"};
+        String[] p2Hand = {"5H", "9S", "TC", "4C", "4S"};
+        String[] p3Hand = {"5S", "TS", "9C", "AC", "7D"};
+        String[] p4Hand = {"6S", "KS", "7C", "AH", "KD"};
+
+        browsers.get(0).findElement(By.id("startBtn")).click();
+
+        ArrayList<String[]> cards = new ArrayList<>();
+
+        // Check initial top card
+        for (int i = 0; i < 4; ++i){
+            assert (browsers.get(i).findElement(By.id("AD")).getAttribute("class").contains("topCard"));
+        }
+
+        // Check players received the correct cards
+        for (int i = 0; i < 5; ++i){
+            assert (browsers.get(0).findElement(By.id(p1Hand[i])).isDisplayed());
+            assert (browsers.get(1).findElement(By.id(p2Hand[i])).isDisplayed());
+            assert (browsers.get(2).findElement(By.id(p3Hand[i])).isDisplayed());
+            assert (browsers.get(3).findElement(By.id(p4Hand[i])).isDisplayed());
+        }
+
+        cards.add(p1Hand);
+        cards.add(p2Hand);
+        cards.add(p3Hand);
+        cards.add(p4Hand);
+
+        int counter = 0;
+
+        for (int i = 0; i < 3; ++i){
+            for (WebDriver d : browsers){
+                d.findElement(By.id(cards.get(counter)[i])).click();
+
+                // Check the new top card is updated for all players
+                for (int j = 0; j < 4; ++j)
+                    assert (browsers.get(j).findElement(By.id(cards.get(counter)[i])).getAttribute("class").contains("topCard"));
+
+                counter++;
+//                TimeUnit.MILLISECONDS.sleep(1000);
+            }
+//            TimeUnit.MILLISECONDS.sleep(5000);
+            counter = 0;
+        }
+
+        // P1 plays 2C
+        browsers.get(0).findElement(By.id("2C")).click();
+
+        for (int i = 0; i < 4; ++i)
+            assert (browsers.get(i).findElement(By.id("2C")).getAttribute("class").contains("topCard"));
+
+        // P2 plays 4C and 4S
+        browsers.get(1).findElement(By.id("4C")).click();
+
+        for (int i = 0; i < 4; ++i)
+            assert (browsers.get(i).findElement(By.id("4C")).getAttribute("class").contains("topCard"));
+
+        browsers.get(1).findElement(By.id("4S")).click();
+    }
+
+    public void rigTestRow57(){
+        String[] p1Hand = {"5D", "7S", "KC", "2C", "3H"};
+        String[] p2Hand = {"5H", "9S", "TC", "4C", "4S"};
+        String[] p3Hand = {"5S", "TS", "9C", "AC", "7D"};
+        String[] p4Hand = {"6S", "KS", "7C", "AH", "KD"};
+
+        String [] suit = {"S","C","D","H"};
+        String [] rank = {"A","2","3","4","5","6","7","8","9","T","J","Q","K"};
+
+        int counter = 0;
+        ArrayList<Card> rCard = new ArrayList<>();
+
+        // Top card
+        rCard.add(new Card("D", "A"));
+
+        for (int i = 0; i < p1Hand.length; ++i) rCard.add(new Card(p1Hand[i].substring(1), p1Hand[i].substring(0,1)));
+        for (int i = 0; i < p2Hand.length; ++i) rCard.add(new Card(p2Hand[i].substring(1), p2Hand[i].substring(0,1)));
+        for (int i = 0; i < p3Hand.length; ++i) rCard.add(new Card(p3Hand[i].substring(1), p3Hand[i].substring(0,1)));
+        for (int i = 0; i < p4Hand.length; ++i) rCard.add(new Card(p4Hand[i].substring(1), p4Hand[i].substring(0,1)));
+
+//        // Add 6D and 5C to top of draw deck
+//        rCard.add(new Card("C", "T"));
+//        rCard.add(new Card("H", "2"));
+//        rCard.add(new Card("D", "9"));
+//        rCard.add(new Card("S", "5"));
+//        rCard.add(new Card("D", "6"));
+//        rCard.add(new Card("H", "6"));
+//        rCard.add(new Card("C", "7"));
+
+        boolean skip = false;
+
+        for (String s : suit){
+            for (String value : rank){
+                skip = false;
+                // Check if the card already exists in the rigged deck
+                for (Card c : rCard){
+                    if (c.getSuit().equals(s) && c.getRank().equals(value)) {
+                        skip = true;
+                        break;
+                    }
+                }
+
+                if (skip) continue;
+
+                Card c = new Card(s, value);
+                rCard.add(c);
+            }
+        }
+
+        gd.setCards(rCard);
+        gd.setTopCard(game.startGame(gd.getCards(), gd.getPlayers()));
+    }
+
     @AfterEach
     public void tearDown(){
         for (int i = 0; i < 4; ++i){
