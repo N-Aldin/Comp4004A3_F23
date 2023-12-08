@@ -614,7 +614,7 @@ public class AcceptanceTest {
     }
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
-    @DisplayName("top card is KC and player1 plays 7C")
+    @DisplayName("top card is KC and player1 plays 8H  and interface prompts for new suit")
     public void TestRow37() throws InterruptedException {
         rigTestRow37();
 
@@ -632,7 +632,7 @@ public class AcceptanceTest {
 
         assert (browsers.get(0).findElement(By.id("8Played")).isDisplayed());
         assert !(browsers.get(1).findElement(By.id("draw")).isEnabled());
-        assert (browsers.get(0).findElement(By.id("draw")).isEnabled());
+        assert !(browsers.get(0).findElement(By.id("draw")).isEnabled());
 
     }
 
