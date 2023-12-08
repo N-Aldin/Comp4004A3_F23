@@ -135,11 +135,6 @@ public class AcceptanceTest {
             }
         }
 
-//        System.out.println(rCard.size());
-//        for (int i = 0; i < rCard.size(); ++i){
-//            System.out.println(rCard.get(i).getSuit() + rCard.get(i).getRank());
-//        }
-
         gd.setCards(rCard);
         gd.setTopCard(game.startGame(gd.getCards(), gd.getPlayers()));
     }
@@ -301,7 +296,7 @@ public class AcceptanceTest {
         TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(3).findElement(By.id("6C")).click();
-        TimeUnit.MILLISECONDS.sleep(50000);
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check the player turn is 4 for all the browsers and the direction is going left
         for (int i = 0; i < 4; ++i){
@@ -514,6 +509,216 @@ public class AcceptanceTest {
         gd.setCards(rCard);
         gd.setTopCard(game.startGame(gd.getCards(), gd.getPlayers()));
     }
+
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    @DisplayName("top card is KC and player1 plays KH")
+    public void TestRow35() throws InterruptedException {
+        rigTestRow35();
+
+        browsers.get(0).findElement(By.id("startBtn")).click();
+
+        // play cards
+        browsers.get(0).findElement(By.id("KH")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
+
+        // Check top card
+        for (int i = 0; i < 4; ++i){
+            assert (browsers.get(i).findElement(By.id("turnID")).getText().contains("2"));
+            assert (browsers.get(i).findElement(By.id("KH")).getAttribute("class").contains("topCard"));
+        }
+
+        assert (browsers.get(1).findElement(By.id("draw")).isEnabled());
+    }
+
+    public void rigTestRow35(){
+        String [] suit = {"S","C","D","H"};
+        String [] rank = {"A","2","3","4","5","6","7","8","9","T","J","Q","K"};
+
+        ArrayList<Card> rCard = new ArrayList<>();
+        int counter = 1;
+
+        // Will be top card
+        rCard.add(new Card("C", "K"));
+
+        // Will be dealt to player 1
+        rCard.add(new Card("H", "K"));
+
+        for (String s : suit) {
+            for (String value : rank) {
+                if (s.equals("H") && value.equals("K")) continue;
+                else if (s.equals("C") && value.equals("K")) continue;
+
+                counter++;
+
+                Card c = new Card(s, value);
+                rCard.add(c);
+            }
+        }
+
+        gd.setCards(rCard);
+        gd.setTopCard(game.startGame(gd.getCards(), gd.getPlayers()));
+    }
+
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    @DisplayName("top card is KC and player1 plays 7C")
+    public void TestRow36() throws InterruptedException {
+        rigTestRow36();
+
+        browsers.get(0).findElement(By.id("startBtn")).click();
+
+        // play cards
+        browsers.get(0).findElement(By.id("7C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
+
+        // Check top card
+        for (int i = 0; i < 4; ++i){
+            assert (browsers.get(i).findElement(By.id("turnID")).getText().contains("2"));
+            assert (browsers.get(i).findElement(By.id("7C")).getAttribute("class").contains("topCard"));
+        }
+
+        assert (browsers.get(1).findElement(By.id("draw")).isEnabled());
+    }
+
+    public void rigTestRow36(){
+        String [] suit = {"S","C","D","H"};
+        String [] rank = {"A","2","3","4","5","6","7","8","9","T","J","Q","K"};
+
+        ArrayList<Card> rCard = new ArrayList<>();
+        int counter = 1;
+
+        // Will be top card
+        rCard.add(new Card("C", "K"));
+
+        // Will be dealt to player 1
+        rCard.add(new Card("C", "7"));
+
+        for (String s : suit) {
+            for (String value : rank) {
+                if (s.equals("C") && value.equals("K")) continue;
+                else if (s.equals("C") && value.equals("7")) continue;
+
+                counter++;
+
+                Card c = new Card(s, value);
+                rCard.add(c);
+            }
+        }
+
+        gd.setCards(rCard);
+        gd.setTopCard(game.startGame(gd.getCards(), gd.getPlayers()));
+    }
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    @DisplayName("top card is KC and player1 plays 7C")
+    public void TestRow37() throws InterruptedException {
+        rigTestRow37();
+
+        browsers.get(0).findElement(By.id("startBtn")).click();
+
+        // play cards
+        browsers.get(0).findElement(By.id("8H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
+
+        // Check top card
+        for (int i = 0; i < 4; ++i){
+            assert (browsers.get(i).findElement(By.id("turnID")).getText().contains("1"));
+            assert (browsers.get(i).findElement(By.id("8H")).getAttribute("class").contains("topCard"));
+        }
+
+        assert (browsers.get(0).findElement(By.id("8Played")).isDisplayed());
+        assert !(browsers.get(1).findElement(By.id("draw")).isEnabled());
+        assert (browsers.get(0).findElement(By.id("draw")).isEnabled());
+
+    }
+
+    public void rigTestRow37(){
+        String [] suit = {"S","C","D","H"};
+        String [] rank = {"A","2","3","4","5","6","7","8","9","T","J","Q","K"};
+
+        ArrayList<Card> rCard = new ArrayList<>();
+        int counter = 1;
+
+        // Will be top card
+        rCard.add(new Card("C", "K"));
+
+        // Will be dealt to player 1
+        rCard.add(new Card("H", "8"));
+
+        for (String s : suit) {
+            for (String value : rank) {
+                if (s.equals("C") && value.equals("K")) continue;
+                else if (s.equals("H") && value.equals("8")) continue;
+
+                counter++;
+
+                Card c = new Card(s, value);
+                rCard.add(c);
+            }
+        }
+
+        gd.setCards(rCard);
+        gd.setTopCard(game.startGame(gd.getCards(), gd.getPlayers()));
+    }
+
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    @DisplayName("top card is KC and player1 tries to play 5S and interface prohibits this card being played (disabled or message)")
+    public void TestRow38() throws InterruptedException {
+        rigTestRow38();
+
+        browsers.get(0).findElement(By.id("startBtn")).click();
+
+        // play cards
+        browsers.get(0).findElement(By.id("5S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
+
+        try {
+            browsers.get(0).switchTo().alert().dismiss();
+        }catch (Exception e){
+            assert false;
+        }
+
+        // Check top card
+        for (int i = 0; i < 4; ++i){
+            assert (browsers.get(i).findElement(By.id("turnID")).getText().contains("1"));
+            assert (browsers.get(i).findElement(By.id("KC")).getAttribute("class").contains("topCard"));
+        }
+
+        assert (browsers.get(0).findElement(By.id("draw")).isEnabled());
+        assert !(browsers.get(1).findElement(By.id("draw")).isEnabled());
+    }
+
+    public void rigTestRow38(){
+        String [] suit = {"S","C","D","H"};
+        String [] rank = {"A","2","3","4","5","6","7","8","9","T","J","Q","K"};
+
+        ArrayList<Card> rCard = new ArrayList<>();
+        int counter = 1;
+
+        // Will be top card
+        rCard.add(new Card("C", "K"));
+
+        // Will be dealt to player 1
+        rCard.add(new Card("S", "5"));
+
+        for (String s : suit) {
+            for (String value : rank) {
+                if (s.equals("C") && value.equals("K")) continue;
+                else if (s.equals("S") && value.equals("5")) continue;
+
+                counter++;
+
+                Card c = new Card(s, value);
+                rCard.add(c);
+            }
+        }
+
+        gd.setCards(rCard);
+        gd.setTopCard(game.startGame(gd.getCards(), gd.getPlayers()));
+    }
+
 
     @AfterEach
     public void tearDown(){
