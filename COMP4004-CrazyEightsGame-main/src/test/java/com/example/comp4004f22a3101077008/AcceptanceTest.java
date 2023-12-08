@@ -327,9 +327,7 @@ public class AcceptanceTest {
 
         for (String s : suit) {
             for (String value : rank) {
-                // skip the card that was added to be dealt to player 1
                 if (s.equals("C") && value.equals("A")) continue;
-                    // chose a random club card to be the top card
                 else if (s.equals("C") && value.equals("3")) continue;
                 else if (s.equals("C") && value.equals("4")) continue;
                 else if (s.equals("C") && value.equals("5")) continue;
@@ -345,6 +343,92 @@ public class AcceptanceTest {
                     continue;
                 }else if (counter == 17){
                     rCard.add(new Card("C", "6"));
+                    continue;
+                }
+
+                Card c = new Card(s, value);
+                rCard.add(c);
+            }
+        }
+
+        gd.setCards(rCard);
+        gd.setTopCard(game.startGame(gd.getCards(), gd.getPlayers()));
+    }
+
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    @DisplayName("p4 plays 1H: assert next player is player 3 AND interface must show now playing in opposite direction (i.e., right)" +
+            "player3 plays 7H and next player is player 2")
+    public void TestRow30() throws InterruptedException {
+        rigTestRow30();
+
+        browsers.get(0).findElement(By.id("startBtn")).click();
+
+        // play cards
+        browsers.get(0).findElement(By.id("3H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
+
+        browsers.get(1).findElement(By.id("4H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
+
+        browsers.get(2).findElement(By.id("6H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
+
+        browsers.get(3).findElement(By.id("AH")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
+
+        for (int i = 0; i < 4; ++i){
+            assert (browsers.get(i).findElement(By.id("turnID")).getText().contains("3"));
+            assert (browsers.get(i).findElement(By.id("direction")).getText().contains("right"));
+        }
+
+        assert (browsers.get(2).findElement(By.id("draw")).isEnabled());
+
+        browsers.get(2).findElement(By.id("7H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
+
+        for (int i = 0; i < 4; ++i){
+            assert (browsers.get(i).findElement(By.id("turnID")).getText().contains("2"));
+        }
+
+        assert (browsers.get(1).findElement(By.id("draw")).isEnabled());
+
+    }
+
+    public void rigTestRow30(){
+        String [] suit = {"S","C","D","H"};
+        String [] rank = {"A","2","3","4","5","6","7","8","9","T","J","Q","K"};
+
+        ArrayList<Card> rCard = new ArrayList<>();
+        int counter = 1;
+
+        // Will be top card
+        rCard.add(new Card("H", "9"));
+
+        // Will be dealt to player 1
+        rCard.add(new Card("H", "3"));
+
+        for (String s : suit) {
+            for (String value : rank) {
+                if (s.equals("H") && value.equals("9")) continue;
+                else if (s.equals("H") && value.equals("4")) continue;
+                else if (s.equals("H") && value.equals("7")) continue;
+                else if (s.equals("H") && value.equals("3")) continue;
+                else if (s.equals("H") && value.equals("A")) continue;
+                else if (s.equals("H") && value.equals("6")) continue;
+
+
+                counter++;
+                if (counter == 7){
+                    rCard.add(new Card("H", "4"));
+                    continue;
+                }else if (counter == 12){
+                    rCard.add(new Card("H", "7"));
+                    counter++;
+                    rCard.add(new Card("H", "6"));
+                    continue;
+                }else if (counter == 17){
+                    rCard.add(new Card("H", "A"));
                     continue;
                 }
 
