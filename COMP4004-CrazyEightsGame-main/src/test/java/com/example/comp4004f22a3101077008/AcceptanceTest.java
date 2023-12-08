@@ -383,6 +383,7 @@ public class AcceptanceTest {
         }
 
         assert (browsers.get(2).findElement(By.id("draw")).isEnabled());
+        assert !(browsers.get(0).findElement(By.id("draw")).isEnabled());
 
         browsers.get(2).findElement(By.id("7H")).click();
         TimeUnit.MILLISECONDS.sleep(1000);
@@ -429,6 +430,79 @@ public class AcceptanceTest {
                     continue;
                 }else if (counter == 17){
                     rCard.add(new Card("H", "A"));
+                    continue;
+                }
+
+                Card c = new Card(s, value);
+                rCard.add(c);
+            }
+        }
+
+        gd.setCards(rCard);
+        gd.setTopCard(game.startGame(gd.getCards(), gd.getPlayers()));
+    }
+
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    @DisplayName("p4 plays QC assert next player is player 2  (because player 1 loses their turn)")
+    public void TestRow32() throws InterruptedException {
+        rigTestRow32();
+
+        browsers.get(0).findElement(By.id("startBtn")).click();
+
+        // play cards
+        browsers.get(0).findElement(By.id("3C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
+
+        browsers.get(1).findElement(By.id("4C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
+
+        browsers.get(2).findElement(By.id("5C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
+
+        browsers.get(3).findElement(By.id("QC")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
+
+        // Check the player turn is 4 for all the browsers and the direction is going left
+        for (int i = 0; i < 4; ++i){
+            assert (browsers.get(i).findElement(By.id("turnID")).getText().contains("2"));
+        }
+
+        assert (browsers.get(1).findElement(By.id("draw")).isEnabled());
+        assert !(browsers.get(0).findElement(By.id("draw")).isEnabled());
+    }
+
+    public void rigTestRow32(){
+        String [] suit = {"S","C","D","H"};
+        String [] rank = {"A","2","3","4","5","6","7","8","9","T","J","Q","K"};
+
+        ArrayList<Card> rCard = new ArrayList<>();
+        int counter = 1;
+
+        // Will be top card
+        rCard.add(new Card("C", "A"));
+
+        // Will be dealt to player 1
+        rCard.add(new Card("C", "3"));
+
+        for (String s : suit) {
+            for (String value : rank) {
+                if (s.equals("C") && value.equals("A")) continue;
+                else if (s.equals("C") && value.equals("3")) continue;
+                else if (s.equals("C") && value.equals("4")) continue;
+                else if (s.equals("C") && value.equals("5")) continue;
+                else if (s.equals("C") && value.equals("Q")) continue;
+
+
+                counter++;
+                if (counter == 7){
+                    rCard.add(new Card("C", "4"));
+                    continue;
+                }else if (counter == 12){
+                    rCard.add(new Card("C", "5"));
+                    continue;
+                }else if (counter == 17){
+                    rCard.add(new Card("C", "Q"));
                     continue;
                 }
 
