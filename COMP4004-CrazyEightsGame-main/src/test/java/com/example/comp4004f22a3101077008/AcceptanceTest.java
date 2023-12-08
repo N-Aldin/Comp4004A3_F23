@@ -1,5 +1,6 @@
 package com.example.comp4004f22a3101077008;
 
+import com.beust.ah.A;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -719,6 +722,144 @@ public class AcceptanceTest {
         gd.setTopCard(game.startGame(gd.getCards(), gd.getPlayers()));
     }
 
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    @DisplayName("top card is 7C and p1 has only {3H} as hand: must draw, draws 6C and must play it")
+    public void TestRow42() throws InterruptedException {
+        rigTestRow42();
+
+        String[] p1Hand = {"4C", "7H", "9S", "5S", "3H"};
+        String[] p2Hand = {"4H", "KH", "KS", "4S", "4D"};
+        String[] p3Hand = {"5H", "9H", "7S", "3S", "5D"};
+        String[] p4Hand = {"6H", "9C", "6S", "3C", "6D"};
+
+        ArrayList<String[]> hands = new ArrayList<>();
+
+        hands.add(p1Hand);
+        hands.add(p2Hand);
+        hands.add(p3Hand);
+        hands.add(p4Hand);
+
+        browsers.get(0).findElement(By.id("startBtn")).click();
+
+        // Check initial top card
+        for (int i = 0; i < 4; ++i){
+            assert (browsers.get(i).findElement(By.id("AC")).getAttribute("class").contains("topCard"));
+        }
+
+        // Check players received the correct cards
+        for (int i = 0; i < 5; ++i){
+            assert (browsers.get(0).findElement(By.id(p1Hand[i])).isDisplayed());
+            assert (browsers.get(1).findElement(By.id(p2Hand[i])).isDisplayed());
+            assert (browsers.get(2).findElement(By.id(p3Hand[i])).isDisplayed());
+            assert (browsers.get(3).findElement(By.id(p4Hand[i])).isDisplayed());
+        }
+
+        TimeUnit.MILLISECONDS.sleep(5000);
+
+
+        // play cards until P1 only has H3 left in their hand
+        browsers.get(0).findElement(By.id("4C")).click();
+
+        // Check the new top card is updated for all players
+        for (int i = 0; i < 4; ++i){
+            assert (browsers.get(i).findElement(By.id("4C")).getAttribute("class").contains("topCard"));
+            assert (browsers.get(i).findElement(By.id("turnID")).getText().contains("2"));
+        }
+
+        browsers.get(1).findElement(By.id("4H")).click();
+        browsers.get(2).findElement(By.id("5H")).click();
+        browsers.get(3).findElement(By.id("6H")).click();
+        browsers.get(0).findElement(By.id("7H")).click();
+
+        browsers.get(1).findElement(By.id("KH")).click();
+        browsers.get(2).findElement(By.id("9H")).click();
+        browsers.get(3).findElement(By.id("9C")).click();
+        browsers.get(0).findElement(By.id("9S")).click();
+
+        browsers.get(1).findElement(By.id("KS")).click();
+        browsers.get(2).findElement(By.id("7S")).click();
+        browsers.get(3).findElement(By.id("6S")).click();
+        browsers.get(0).findElement(By.id("5S")).click();
+
+        browsers.get(1).findElement(By.id("4S")).click();
+        browsers.get(2).findElement(By.id("3S")).click();
+        browsers.get(3).findElement(By.id("3C")).click();
+
+        TimeUnit.MILLISECONDS.sleep(5000);
+
+        // P1 draws
+        browsers.get(0).findElement(By.id("draw")).click();
+
+        // Verify 6C is drawn
+        assert (browsers.get(0).findElement(By.id("6C")).isDisplayed());
+
+        // Check other cards are disabled since 6C was drawn, only other card is 3H
+        assert !(browsers.get(0).findElement(By.id("3H")).isEnabled());
+        assert !(browsers.get(0).findElement(By.id("draw")).isEnabled());
+
+        // Play the card 6C
+        browsers.get(0).findElement(By.id("6C")).click();
+
+        // Check top card and its players 2s turn
+        for (int i = 0; i < 4; ++i){
+            assert (browsers.get(i).findElement(By.id("turnID")).getText().contains("2"));
+            assert (browsers.get(i).findElement(By.id("6C")).getAttribute("class").contains("topCard"));
+        }
+    }
+
+    public void rigTestRow42(){
+
+        String[] p1Hand = {"4C", "7H", "9S", "5S", "3H"};
+        String[] p2Hand = {"4H", "KH", "KS", "4S", "4D"};
+        String[] p3Hand = {"5H", "9H", "7S", "3S", "5D"};
+        String[] p4Hand = {"6H", "9C", "6S", "3C", "6D"};
+
+        String [] suit = {"S","C","D","H"};
+        String [] rank = {"A","2","3","4","5","6","7","8","9","T","J","Q","K"};
+
+        int counter = 0;
+        ArrayList<Card> rCard = new ArrayList<>();
+
+        // Top card
+        rCard.add(new Card("C", "A"));
+
+        for (int i = 0; i < p1Hand.length; ++i) rCard.add(new Card(p1Hand[i].substring(1), p1Hand[i].substring(0,1)));
+        for (int i = 0; i < p2Hand.length; ++i) rCard.add(new Card(p2Hand[i].substring(1), p2Hand[i].substring(0,1)));
+        for (int i = 0; i < p3Hand.length; ++i) rCard.add(new Card(p3Hand[i].substring(1), p3Hand[i].substring(0,1)));
+        for (int i = 0; i < p4Hand.length; ++i) rCard.add(new Card(p4Hand[i].substring(1), p4Hand[i].substring(0,1)));
+
+        // Add 6C to top of draw deck
+        rCard.add(new Card("C", "6"));
+
+        boolean skip = false;
+
+        for (String s : suit){
+            for (String value : rank){
+                skip = false;
+                // Check if the card already exists in the rigged deck
+                for (Card c : rCard){
+                    if (c.getSuit().equals(s) && c.getRank().equals(value)) {
+                        skip = true;
+                        break;
+                    }
+                }
+
+                if (skip) continue;
+
+                Card c = new Card(s, value);
+                rCard.add(c);
+            }
+        }
+
+//        System.out.println(rCard.size());
+//        for (Card c : rCard){
+//            System.out.println(c.getSuit() + c.getRank());
+//        }
+
+        gd.setCards(rCard);
+        gd.setTopCard(game.startGame(gd.getCards(), gd.getPlayers()));
+    }
 
     @AfterEach
     public void tearDown(){
