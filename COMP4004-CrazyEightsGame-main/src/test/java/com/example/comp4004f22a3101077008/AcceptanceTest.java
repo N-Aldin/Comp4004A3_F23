@@ -1785,6 +1785,16 @@ public class AcceptanceTest {
         assert browsers.get(1).findElement(By.id("6S")).isDisplayed();
         assert browsers.get(1).findElement(By.id("9D")).isDisplayed();
 
+        // Try playing a invalid card
+        browsers.get(1).findElement(By.id("6S")).click();
+
+        // Check if the alert message pops up
+        try {
+            browsers.get(1).switchTo().alert().dismiss();
+        }catch (Exception e){
+            assert false;
+        }
+
         // P2 draws 2 more cards
         browsers.get(1).findElement(By.id("draw")).click();
         browsers.get(1).findElement(By.id("draw")).click();
@@ -1836,6 +1846,154 @@ public class AcceptanceTest {
         rCard.add(new Card("D", "9"));
         rCard.add(new Card("H", "9"));
         rCard.add(new Card("C", "6"));
+
+        boolean skip = false;
+
+        for (String s : suit){
+            for (String value : rank){
+                skip = false;
+                // Check if the card already exists in the rigged deck
+                for (Card c : rCard){
+                    if (c.getSuit().equals(s) && c.getRank().equals(value)) {
+                        skip = true;
+                        break;
+                    }
+                }
+
+                if (skip) continue;
+
+                Card c = new Card(s, value);
+                rCard.add(c);
+            }
+        }
+
+        gd.setCards(rCard);
+        gd.setTopCard(game.startGame(gd.getCards(), gd.getPlayers()));
+    }
+
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    @DisplayName("p1 plays 2C, p2 has only {4H} draws {6S and 9D} then draws 9H, 7S, 5H and then  turns end (without playing a card)")
+    public void TestRow53() throws InterruptedException {
+        rigTestRow53();
+
+        String[] p1Hand = {"3C", "4H", "TD", "KS", "2C"};
+        String[] p2Hand = {"TH", "4D", "TS", "KC", "3H"};
+        String[] p3Hand = {"7H", "6D", "3S", "4C", "5D"};
+        String[] p4Hand = {"6H", "7D", "5S", "7C", "AD"};
+
+        browsers.get(0).findElement(By.id("startBtn")).click();
+
+        ArrayList<String[]> cards = new ArrayList<>();
+
+        // Check initial top card
+        for (int i = 0; i < 4; ++i){
+            assert (browsers.get(i).findElement(By.id("AC")).getAttribute("class").contains("topCard"));
+        }
+
+        // Check players received the correct cards
+        for (int i = 0; i < 5; ++i){
+            assert (browsers.get(0).findElement(By.id(p1Hand[i])).isDisplayed());
+            assert (browsers.get(1).findElement(By.id(p2Hand[i])).isDisplayed());
+            assert (browsers.get(2).findElement(By.id(p3Hand[i])).isDisplayed());
+            assert (browsers.get(3).findElement(By.id(p4Hand[i])).isDisplayed());
+        }
+
+        cards.add(p1Hand);
+        cards.add(p2Hand);
+        cards.add(p3Hand);
+        cards.add(p4Hand);
+
+        // P1 draws
+        browsers.get(0).findElement(By.id("draw")).click();
+
+        // picks up TC and plays it
+        browsers.get(0).findElement(By.id("TC")).click();
+        for (int i = 0; i < 4; ++i)
+            assert (browsers.get(i).findElement(By.id("TC")).getAttribute("class").contains("topCard"));
+
+        browsers.get(1).findElement(By.id("TH")).click();
+        for (int i = 0; i < 4; ++i)
+            assert (browsers.get(i).findElement(By.id("TH")).getAttribute("class").contains("topCard"));
+
+        browsers.get(2).findElement(By.id("7H")).click();
+        for (int i = 0; i < 4; ++i)
+            assert (browsers.get(i).findElement(By.id("7H")).getAttribute("class").contains("topCard"));
+
+        browsers.get(3).findElement(By.id("6H")).click();
+        for (int i = 0; i < 4; ++i)
+            assert (browsers.get(i).findElement(By.id("6H")).getAttribute("class").contains("topCard"));
+
+        int counter = 0;
+
+        for (int i = 1; i < 4; ++i){
+            for (WebDriver d : browsers){
+                d.findElement(By.id(cards.get(counter)[i])).click();
+
+                // Check the new top card is updated for all players
+                for (int j = 0; j < 4; ++j)
+                    assert (browsers.get(j).findElement(By.id(cards.get(counter)[i])).getAttribute("class").contains("topCard"));
+
+                counter++;
+            }
+//            TimeUnit.MILLISECONDS.sleep(5000);
+            counter = 0;
+        }
+
+        // P1 plays 2C
+        browsers.get(0).findElement(By.id("2C")).click();
+
+        for (int i = 0; i < 4; ++i)
+            assert (browsers.get(i).findElement(By.id("2C")).getAttribute("class").contains("topCard"));
+
+        // Verify P2 received the correct cards
+        assert browsers.get(1).findElement(By.id("6S")).isDisplayed();
+        assert browsers.get(1).findElement(By.id("9D")).isDisplayed();
+
+        // P2 draws 2 more cards
+        browsers.get(1).findElement(By.id("draw")).click();
+        browsers.get(1).findElement(By.id("draw")).click();
+        browsers.get(1).findElement(By.id("draw")).click();
+
+        // Verify 9H and 7S and 5H are drawn
+        assert browsers.get(1).findElement(By.id("7S")).isDisplayed();
+        assert browsers.get(1).findElement(By.id("9H")).isDisplayed();
+        assert browsers.get(1).findElement(By.id("5H")).isDisplayed();
+
+        // Check top card and its players 3s turn
+        for (int i = 0; i < 4; ++i){
+            assert (browsers.get(i).findElement(By.id("turnID")).getText().contains("3"));
+            assert (browsers.get(i).findElement(By.id("2C")).getAttribute("class").contains("topCard"));
+        }
+    }
+
+    public void rigTestRow53(){
+        String[] p1Hand = {"3C", "4H", "TD", "KS", "2C"};
+        String[] p2Hand = {"TH", "4D", "TS", "KC", "3H"};
+        String[] p3Hand = {"7H", "6D", "3S", "4C", "5D"};
+        String[] p4Hand = {"6H", "7D", "5S", "7C", "AD"};
+
+        String [] suit = {"S","C","D","H"};
+        String [] rank = {"A","2","3","4","5","6","7","8","9","T","J","Q","K"};
+
+        int counter = 0;
+        ArrayList<Card> rCard = new ArrayList<>();
+
+        // Top card
+        rCard.add(new Card("C", "A"));
+
+        for (int i = 0; i < p1Hand.length; ++i) rCard.add(new Card(p1Hand[i].substring(1), p1Hand[i].substring(0,1)));
+        for (int i = 0; i < p2Hand.length; ++i) rCard.add(new Card(p2Hand[i].substring(1), p2Hand[i].substring(0,1)));
+        for (int i = 0; i < p3Hand.length; ++i) rCard.add(new Card(p3Hand[i].substring(1), p3Hand[i].substring(0,1)));
+        for (int i = 0; i < p4Hand.length; ++i) rCard.add(new Card(p4Hand[i].substring(1), p4Hand[i].substring(0,1)));
+
+        // Add 6D and 5C to top of draw deck
+        rCard.add(new Card("C", "T"));
+        rCard.add(new Card("S", "6"));
+        rCard.add(new Card("D", "9"));
+        rCard.add(new Card("H", "9"));
+        rCard.add(new Card("S", "7"));
+        rCard.add(new Card("H", "5"));
 
         boolean skip = false;
 
