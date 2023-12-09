@@ -33,7 +33,6 @@ public class AcceptanceTest {
     GameLogic game;
     @LocalServerPort
     int port;
-    int[] pCardStrtInd = {2, 7, 12, 17, 22};
 
 //    Browsers
     ArrayList<WebDriver> browsers;
@@ -732,13 +731,6 @@ public class AcceptanceTest {
         String[] p2Hand = {"4H", "KH", "KS", "4S", "4D"};
         String[] p3Hand = {"5H", "9H", "3S", "7S", "5D"};
         String[] p4Hand = {"6H", "9C", "6S", "7C", "6D"};
-
-        ArrayList<String[]> hands = new ArrayList<>();
-
-        hands.add(p1Hand);
-        hands.add(p2Hand);
-        hands.add(p3Hand);
-        hands.add(p4Hand);
 
         browsers.get(0).findElement(By.id("startBtn")).click();
 
@@ -1633,7 +1625,6 @@ public class AcceptanceTest {
 
                 counter++;
             }
-//            TimeUnit.MILLISECONDS.sleep(5000);
             counter = 0;
         }
 
@@ -1771,7 +1762,6 @@ public class AcceptanceTest {
 
                 counter++;
             }
-//            TimeUnit.MILLISECONDS.sleep(5000);
             counter = 0;
         }
 
@@ -1936,7 +1926,6 @@ public class AcceptanceTest {
 
                 counter++;
             }
-//            TimeUnit.MILLISECONDS.sleep(5000);
             counter = 0;
         }
 
@@ -2085,7 +2074,6 @@ public class AcceptanceTest {
 
                 counter++;
             }
-//            TimeUnit.MILLISECONDS.sleep(5000);
             counter = 0;
         }
 
@@ -2221,7 +2209,6 @@ public class AcceptanceTest {
                 counter++;
 //                TimeUnit.MILLISECONDS.sleep(1000);
             }
-//            TimeUnit.MILLISECONDS.sleep(5000);
             counter = 0;
         }
 
@@ -2259,15 +2246,6 @@ public class AcceptanceTest {
         for (int i = 0; i < p2Hand.length; ++i) rCard.add(new Card(p2Hand[i].substring(1), p2Hand[i].substring(0,1)));
         for (int i = 0; i < p3Hand.length; ++i) rCard.add(new Card(p3Hand[i].substring(1), p3Hand[i].substring(0,1)));
         for (int i = 0; i < p4Hand.length; ++i) rCard.add(new Card(p4Hand[i].substring(1), p4Hand[i].substring(0,1)));
-
-//        // Add 6D and 5C to top of draw deck
-//        rCard.add(new Card("C", "T"));
-//        rCard.add(new Card("H", "2"));
-//        rCard.add(new Card("D", "9"));
-//        rCard.add(new Card("S", "5"));
-//        rCard.add(new Card("D", "6"));
-//        rCard.add(new Card("H", "6"));
-//        rCard.add(new Card("C", "7"));
 
         boolean skip = false;
 
