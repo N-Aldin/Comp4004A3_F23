@@ -2293,6 +2293,143 @@ public class AcceptanceTest {
         gd.setTopCard(game.startGame(gd.getCards(), gd.getPlayers()));
     }
 
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    @DisplayName("first round ends with p1 with {1S}, p2 with no cards, p3 with {8H, JH, 6H, KH, KS}, p4 with {8C, 8D, 2D}" +
+            " then game is over with p1 scores 1, p2 scores 0, p3 scores 86 and p4 scores 102")
+    public void TestRow62() throws InterruptedException {
+        rigTestRow62();
+
+        String[] p1Hand = {"JC", "TC", "3H", "5H", "AS"};
+        String[] p2Hand = {"4C", "QC", "QH", "8H", "4S"}; // CHANGE TO SPADE
+        String[] p3Hand = {"8H", "JH", "6H", "KH", "KS"};
+        String[] p4Hand = {"9C", "8S", "8C", "8D", "2D"}; // 8H CHANGE TO HEART AND SKIP P3
+
+        browsers.get(0).findElement(By.id("startBtn")).click();
+
+        ArrayList<String[]> cards = new ArrayList<>();
+
+        // Check initial top card
+        for (int i = 0; i < 4; ++i){
+            assert (browsers.get(i).findElement(By.id("AC")).getAttribute("class").contains("topCard"));
+        }
+
+        // Check players received the correct cards
+        for (int i = 0; i < 5; ++i){
+            assert (browsers.get(0).findElement(By.id(p1Hand[i])).isDisplayed());
+            assert (browsers.get(1).findElement(By.id(p2Hand[i])).isDisplayed());
+            assert (browsers.get(2).findElement(By.id(p3Hand[i])).isDisplayed());
+            assert (browsers.get(3).findElement(By.id(p4Hand[i])).isDisplayed());
+        }
+
+
+        /*
+        C1 - TOP CARD
+        DRAW C3 AND PLAY P1
+        4C
+        DRAW C5 AND PLAY P3
+        9C
+        TC
+        QC SKIP P3
+        8S CHANGE TO HEART
+        3H
+        QH SKIP P3
+        DRAW 4H AND PLAY P4
+        5H
+        8H CHANGE TO SPADE
+        DRAW 5S and play
+        DRAW QS AND PLAY P4
+        4S
+         */
+
+        browsers.get(0).findElement(By.id("draw")).click();
+        browsers.get(0).findElement(By.id("3C")).click();
+        browsers.get(1).findElement(By.id("4C")).click();
+        browsers.get(2).findElement(By.id("draw")).click();
+        browsers.get(2).findElement(By.id("5C")).click();
+        browsers.get(3).findElement(By.id("9C")).click();
+
+        browsers.get(0).findElement(By.id("TC")).click();
+        browsers.get(1).findElement(By.id("QC")).click();
+        browsers.get(3).findElement(By.id("8S")).click();
+        browsers.get(3).findElement(By.id("heart")).click();
+
+        browsers.get(0).findElement(By.id("3H")).click();
+        browsers.get(1).findElement(By.id("QH")).click();
+        browsers.get(3).findElement(By.id("draw")).click();
+        browsers.get(3).findElement(By.id("4H")).click();
+
+        browsers.get(0).findElement(By.id("5H")).click();
+        browsers.get(1).findElement(By.id("8H")).click();
+        browsers.get(1).findElement(By.id("spade")).click();
+        browsers.get(2).findElement(By.id("draw")).click();
+        browsers.get(2).findElement(By.id("5S")).click();
+        browsers.get(3).findElement(By.id("draw")).click();
+        browsers.get(3).findElement(By.id("QS")).click();
+
+        browsers.get(1).findElement(By.id("4S")).click();
+
+        // Assert winner and scores for every player
+        for (int i = 0; i < 4; ++i){
+            assert (browsers.get(i).findElement(By.id("winMSG")).getText().contains("WINNER IS PLAYER 2"));
+            assert (browsers.get(i).findElement(By.id("p1")).getText().contains("11"));
+            assert (browsers.get(i).findElement(By.id("p2")).getText().contains("0"));
+            assert (browsers.get(i).findElement(By.id("p3")).getText().contains("86"));
+            assert (browsers.get(i).findElement(By.id("p4")).getText().contains("102"));
+        }
+    }
+
+    public void rigTestRow62(){
+        String[] p1Hand = {"JC", "TC", "3H", "5H", "AS"};
+        String[] p2Hand = {"4C", "QC", "QH", "8H", "4S"}; // CHANGE TO SPADE
+        String[] p3Hand = {"8H", "JH", "6H", "KH", "KS"};
+        String[] p4Hand = {"9C", "8S", "8C", "8D", "2D"}; // 8H CHANGE TO HEART AND SKIP P3
+
+        String [] suit = {"S","C","D","H"};
+        String [] rank = {"A","2","3","4","5","6","7","8","9","T","J","Q","K"};
+
+        int counter = 0;
+        ArrayList<Card> rCard = new ArrayList<>();
+
+        // Top card
+        rCard.add(new Card("C", "A"));
+
+        for (int i = 0; i < p1Hand.length; ++i) rCard.add(new Card(p1Hand[i].substring(1), p1Hand[i].substring(0,1)));
+        for (int i = 0; i < p2Hand.length; ++i) rCard.add(new Card(p2Hand[i].substring(1), p2Hand[i].substring(0,1)));
+        for (int i = 0; i < p3Hand.length; ++i) rCard.add(new Card(p3Hand[i].substring(1), p3Hand[i].substring(0,1)));
+        for (int i = 0; i < p4Hand.length; ++i) rCard.add(new Card(p4Hand[i].substring(1), p4Hand[i].substring(0,1)));
+
+        // Add 6D and 5C to top of draw deck
+        rCard.add(new Card("C", "3")); // P1 chooses to draw and has to play
+        rCard.add(new Card("C", "5")); // P3 has to draw and plays
+        rCard.add(new Card("H", "4")); // P4
+        rCard.add(new Card("S", "5"));
+        rCard.add(new Card("S", "Q")); // P4
+
+        boolean skip = false;
+
+        for (String s : suit){
+            for (String value : rank){
+                skip = false;
+                // Check if the card already exists in the rigged deck
+                for (Card c : rCard){
+                    if (c.getSuit().equals(s) && c.getRank().equals(value)) {
+                        skip = true;
+                        break;
+                    }
+                }
+
+                if (skip) continue;
+
+                Card c = new Card(s, value);
+                rCard.add(c);
+            }
+        }
+
+        gd.setCards(rCard);
+        gd.setTopCard(game.startGame(gd.getCards(), gd.getPlayers()));
+    }
+
     @AfterEach
     public void tearDown(){
         for (int i = 0; i < 4; ++i){
