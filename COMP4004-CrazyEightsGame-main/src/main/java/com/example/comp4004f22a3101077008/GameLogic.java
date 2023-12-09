@@ -181,7 +181,7 @@ public class GameLogic{
                         }
                     }
                 }
-                p.setScore(score);
+                p.setScore(score + p.getScore());
             }
         }
     }
