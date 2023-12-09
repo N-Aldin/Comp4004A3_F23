@@ -56,7 +56,7 @@ public class AcceptanceTest {
         for (int i = 0; i < 4; ++i){
             driver = new ChromeDriver(options);
             driver.get("http://localhost:" + port + "/");
-//            TimeUnit.MILLISECONDS.sleep(1000);
+            TimeUnit.MILLISECONDS.sleep(1000);
             driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
             driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
             driver.findElement(By.id("usernameBtn")).click();
@@ -83,15 +83,17 @@ public class AcceptanceTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     @DisplayName("p1 plays 3C: assert next player is player 2")
-    public void TestRow25(){
+    public void TestRow25() throws InterruptedException {
 
         rigTestRow25();
 
         browsers.get(0).findElement(By.id("startBtn")).click();
 
-        browsers.get(0).findElement(By.id("3C")).click();
+        for (int i = 0; i < 4; ++i){
+            assert (browsers.get(i).findElement(By.id("4C")).getAttribute("class").contains("topCard"));
+        }
 
-        // TODO: Check the top card ******
+        browsers.get(0).findElement(By.id("3C")).click();
 
         // Check the player turn is 2 for all the browsers and the direction is going right
         for (int i = 0; i < 4; ++i){
@@ -101,12 +103,7 @@ public class AcceptanceTest {
 
         assert browsers.get(1).findElement(By.id("draw")).isEnabled();
 
-        try {
-            TimeUnit.MILLISECONDS.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
+        TimeUnit.MILLISECONDS.sleep(1000);
     }
 
     // Need player 1 to have 3C and the top card to be a C card
@@ -145,25 +142,17 @@ public class AcceptanceTest {
     @Test
     @DisplayName("p1 plays 1H assert next player is player 4 AND interface must show now playing in opposite direction (i.e., going right) " +
             "player4 plays 7H and next player is player 3")
-    public void TestRow26(){
+    public void TestRow26() throws InterruptedException {
 
         rigTestRow26();
 
         browsers.get(0).findElement(By.id("startBtn")).click();
 
-        try {
-            TimeUnit.MILLISECONDS.sleep(500);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        TimeUnit.MILLISECONDS.sleep(500);
 
         browsers.get(0).findElement(By.id("AH")).click();
 
-        try {
-            TimeUnit.MILLISECONDS.sleep(500);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check the player turn is 4 for all the browsers and the direction is going left
         for (int i = 0; i < 4; ++i){
@@ -171,25 +160,17 @@ public class AcceptanceTest {
             assert (browsers.get(i).findElement(By.id("direction")).getText().contains("right"));
         }
 
-        try {
-            TimeUnit.MILLISECONDS.sleep(500);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // check the players draw button is enabled
         assert browsers.get(3).findElement(By.id("draw")).isEnabled();
 
         browsers.get(3).findElement(By.id("7H")).click();
 
+        TimeUnit.MILLISECONDS.sleep(1000);
+
         // checking that player 3's draw button is enabled signifying that it is their turn
         assert browsers.get(2).findElement(By.id("draw")).isEnabled();
-
-        try {
-            TimeUnit.MILLISECONDS.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
 
     }
 
@@ -235,7 +216,11 @@ public class AcceptanceTest {
 
         browsers.get(0).findElement(By.id("startBtn")).click();
 
+        TimeUnit.MILLISECONDS.sleep(1000);
+
         browsers.get(0).findElement(By.id("QC")).click();
+
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check the player turn is 4 for all the browsers and the direction is going left
         for (int i = 0; i < 4; ++i){
@@ -747,11 +732,11 @@ public class AcceptanceTest {
             assert (browsers.get(3).findElement(By.id(p4Hand[i])).isDisplayed());
         }
 
-        TimeUnit.MILLISECONDS.sleep(5000);
-
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // play cards until P1 only has H3 left in their hand
         browsers.get(0).findElement(By.id("4C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check the new top card is updated for all players
         for (int i = 0; i < 4; ++i){
@@ -760,28 +745,42 @@ public class AcceptanceTest {
         }
 
         browsers.get(1).findElement(By.id("4H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("5H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("6H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("7H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("KH")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("9H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("9C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("9S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("KS")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("3S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("6S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("5S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("4S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("7S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("7C")).click();
-
-        TimeUnit.MILLISECONDS.sleep(5000);
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // P1 draws
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Verify 6C is drawn
         assert (browsers.get(0).findElement(By.id("6C")).isDisplayed());
@@ -792,6 +791,7 @@ public class AcceptanceTest {
 
         // Play the card 6C
         browsers.get(0).findElement(By.id("6C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check top card and its players 2s turn
         for (int i = 0; i < 4; ++i){
@@ -873,15 +873,12 @@ public class AcceptanceTest {
             assert (browsers.get(2).findElement(By.id(p3Hand[i])).isDisplayed());
             assert (browsers.get(3).findElement(By.id(p4Hand[i])).isDisplayed());
         }
-
-        TimeUnit.MILLISECONDS.sleep(5000);
-
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // play cards until P1 only has H3 left in their hand
         browsers.get(0).findElement(By.id("4C")).click();
 
-        TimeUnit.MILLISECONDS.sleep(5000);
-
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check the new top card is updated for all players
         for (int i = 0; i < 4; ++i){
@@ -890,43 +887,53 @@ public class AcceptanceTest {
         }
 
         browsers.get(1).findElement(By.id("4H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("5H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("6H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("7H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("KH")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("9H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("9C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("9S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("KS")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("3S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("6S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("5S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("4S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("7S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("7C")).click();
-
-        TimeUnit.MILLISECONDS.sleep(5000);
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // P1 draws
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Verify 6D is drawn
         assert (browsers.get(0).findElement(By.id("6D")).isDisplayed());
-
-        TimeUnit.MILLISECONDS.sleep(5000);
-
         assert (browsers.get(0).findElement(By.id("draw")).isEnabled());
 
         // Draw again for 5C
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Verify 5C is drawn
         assert (browsers.get(0).findElement(By.id("5C")).isDisplayed());
-
-        TimeUnit.MILLISECONDS.sleep(5000);
 
         // Check other cards and draw button are disabled
         assert !(browsers.get(0).findElement(By.id("3H")).isEnabled());
@@ -935,6 +942,7 @@ public class AcceptanceTest {
 
         // Play the card 5C
         browsers.get(0).findElement(By.id("5C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check top card and its players 2s turn
         for (int i = 0; i < 4; ++i){
@@ -1018,14 +1026,9 @@ public class AcceptanceTest {
             assert (browsers.get(3).findElement(By.id(p4Hand[i])).isDisplayed());
         }
 
-        TimeUnit.MILLISECONDS.sleep(5000);
-
-
         // play cards until P1 only has H3 left in their hand
         browsers.get(0).findElement(By.id("4C")).click();
-
-        TimeUnit.MILLISECONDS.sleep(5000);
-
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check the new top card is updated for all players
         for (int i = 0; i < 4; ++i){
@@ -1034,51 +1037,60 @@ public class AcceptanceTest {
         }
 
         browsers.get(1).findElement(By.id("4H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("5H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("5D")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("KD")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("KH")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("9H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("9C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("9S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("KS")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("3S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("6S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("TS")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("4S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("7S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("7C")).click();
-
-        TimeUnit.MILLISECONDS.sleep(5000);
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // P1 draws
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Verify 6D is drawn
         assert (browsers.get(0).findElement(By.id("6D")).isDisplayed());
-
-        TimeUnit.MILLISECONDS.sleep(5000);
-
         assert (browsers.get(0).findElement(By.id("draw")).isEnabled());
 
         // Draw again for 5S
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Verify 5S is drawn
         assert (browsers.get(0).findElement(By.id("5S")).isDisplayed());
 
-        TimeUnit.MILLISECONDS.sleep(5000);
-
         // Draw again for 7H
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Verify 7H is drawn
         assert (browsers.get(0).findElement(By.id("7H")).isDisplayed());
-
-        TimeUnit.MILLISECONDS.sleep(5000);
 
         // Check other cards and draw button are disabled
         assert !(browsers.get(0).findElement(By.id("3H")).isEnabled());
@@ -1088,6 +1100,7 @@ public class AcceptanceTest {
 
         // Play the card 7H
         browsers.get(0).findElement(By.id("7H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check top card and its players 2s turn
         for (int i = 0; i < 4; ++i){
@@ -1172,13 +1185,9 @@ public class AcceptanceTest {
             assert (browsers.get(3).findElement(By.id(p4Hand[i])).isDisplayed());
         }
 
-//        TimeUnit.MILLISECONDS.sleep(5000);
-
-
         // play cards until P1 only has H3 left in their hand
         browsers.get(0).findElement(By.id("TC")).click();
-
-        TimeUnit.MILLISECONDS.sleep(5000);
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check the new top card is updated for all players
         for (int i = 0; i < 4; ++i){
@@ -1187,50 +1196,60 @@ public class AcceptanceTest {
         }
 
         browsers.get(1).findElement(By.id("TH")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("5H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("5D")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("KD")).click();
-
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("KH")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("9H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("9C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("9S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("KS")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("3S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("6S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("TS")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("4S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("7S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("7C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // P1 draws
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Verify 6D is drawn
         assert (browsers.get(0).findElement(By.id("6D")).isDisplayed());
-
-        TimeUnit.MILLISECONDS.sleep(5000);
-
         assert (browsers.get(0).findElement(By.id("draw")).isEnabled());
 
         // Draw again for 5S
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Verify 5S is drawn
         assert (browsers.get(0).findElement(By.id("5S")).isDisplayed());
 
-        TimeUnit.MILLISECONDS.sleep(5000);
-
         // Draw again for 4D
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Verify 4H is drawn
         assert (browsers.get(0).findElement(By.id("4H")).isDisplayed());
-
-        TimeUnit.MILLISECONDS.sleep(5000);
 
         // Check top card and its players 2s turn
         for (int i = 0; i < 4; ++i){
@@ -1315,13 +1334,9 @@ public class AcceptanceTest {
             assert (browsers.get(3).findElement(By.id(p4Hand[i])).isDisplayed());
         }
 
-//        TimeUnit.MILLISECONDS.sleep(5000);
-
-
         // play cards until P1 only has H3 left in their hand
         browsers.get(0).findElement(By.id("TC")).click();
-
-        TimeUnit.MILLISECONDS.sleep(5000);
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check the new top card is updated for all players
         for (int i = 0; i < 4; ++i){
@@ -1330,41 +1345,53 @@ public class AcceptanceTest {
         }
 
         browsers.get(1).findElement(By.id("TH")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("5H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("5D")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("KD")).click();
-
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("KH")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("9H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("9C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("9S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("KS")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("3S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("6S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("TS")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("4S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("7S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("7C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // P1 draws
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Verify 6D is drawn
         assert (browsers.get(0).findElement(By.id("6D")).isDisplayed());
-
-        TimeUnit.MILLISECONDS.sleep(5000);
-
         assert (browsers.get(0).findElement(By.id("draw")).isEnabled());
 
         // Draw again for 8H
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Verify 8H is drawn
         assert (browsers.get(0).findElement(By.id("8H")).isDisplayed());
-
         assert !(browsers.get(0).findElement(By.id("3H")).isEnabled());
 
         // Check other cards are disabled
@@ -1372,15 +1399,13 @@ public class AcceptanceTest {
         assert !(browsers.get(0).findElement(By.id("6D")).isEnabled());
         assert !(browsers.get(0).findElement(By.id("draw")).isEnabled());
 
-        TimeUnit.MILLISECONDS.sleep(5000);
-
         // Play 8H
         browsers.get(0).findElement(By.id("8H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Choose a suit
         browsers.get(0).findElement(By.id("club")).click();
-
-        TimeUnit.MILLISECONDS.sleep(5000);
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check top card and its players 2s turn
         for (int i = 0; i < 4; ++i){
@@ -1466,8 +1491,8 @@ public class AcceptanceTest {
 
         // play cards until P1 only has H3 left in their hand
         browsers.get(0).findElement(By.id("TC")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
-        TimeUnit.MILLISECONDS.sleep(5000);
 
         // Check the new top card is updated for all players
         for (int i = 0; i < 4; ++i){
@@ -1476,21 +1501,33 @@ public class AcceptanceTest {
         }
 
         browsers.get(1).findElement(By.id("TH")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("5H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("5D")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("KD")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("KH")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("9H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("9C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("9S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("TS")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("3S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("6S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // P1 chooses to draw
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Verify 6C is drawn
         assert (browsers.get(0).findElement(By.id("6C")).isDisplayed());
@@ -1500,10 +1537,9 @@ public class AcceptanceTest {
         assert !(browsers.get(0).findElement(By.id("3C")).isEnabled());
         assert !(browsers.get(0).findElement(By.id("draw")).isEnabled());
 
-        TimeUnit.MILLISECONDS.sleep(5000);
-
         // play 6C
         browsers.get(0).findElement(By.id("6C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check top card and its players 2s turn
         for (int i = 0; i < 4; ++i){
@@ -1595,23 +1631,28 @@ public class AcceptanceTest {
 
         // P1 draws
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // picks up TC and plays it
         browsers.get(0).findElement(By.id("TC")).click();
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("TC")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("TH")).click();
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("TH")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(2).findElement(By.id("5H")).click();
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("5H")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(3).findElement(By.id("5D")).click();
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("5D")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         int counter = 0;
 
@@ -1624,12 +1665,14 @@ public class AcceptanceTest {
                     assert (browsers.get(j).findElement(By.id(cards.get(counter)[i])).getAttribute("class").contains("topCard"));
 
                 counter++;
+                TimeUnit.MILLISECONDS.sleep(1000);
             }
             counter = 0;
         }
 
         // P1 plays 2C
         browsers.get(0).findElement(By.id("2C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("2C")).getAttribute("class").contains("topCard"));
@@ -1640,6 +1683,7 @@ public class AcceptanceTest {
 
         // P2 plays 6C
         browsers.get(1).findElement(By.id("6C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check top card and its players 3s turn
         for (int i = 0; i < 4; ++i){
@@ -1709,6 +1753,7 @@ public class AcceptanceTest {
         String[] p4Hand = {"5D", "7D", "5S", "7C", "AD"};
 
         browsers.get(0).findElement(By.id("startBtn")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         ArrayList<String[]> cards = new ArrayList<>();
 
@@ -1732,23 +1777,28 @@ public class AcceptanceTest {
 
         // P1 draws
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // picks up TC and plays it
         browsers.get(0).findElement(By.id("TC")).click();
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("TC")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("TH")).click();
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("TH")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(2).findElement(By.id("5H")).click();
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("5H")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(3).findElement(By.id("5D")).click();
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("5D")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         int counter = 0;
 
@@ -1761,12 +1811,14 @@ public class AcceptanceTest {
                     assert (browsers.get(j).findElement(By.id(cards.get(counter)[i])).getAttribute("class").contains("topCard"));
 
                 counter++;
+                TimeUnit.MILLISECONDS.sleep(1000);
             }
             counter = 0;
         }
 
         // P1 plays 2C
         browsers.get(0).findElement(By.id("2C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("2C")).getAttribute("class").contains("topCard"));
@@ -1777,6 +1829,7 @@ public class AcceptanceTest {
 
         // Try playing a invalid card
         browsers.get(1).findElement(By.id("6S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check if the alert message pops up
         try {
@@ -1787,7 +1840,9 @@ public class AcceptanceTest {
 
         // P2 draws 2 more cards
         browsers.get(1).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Verify 9H and 6C are drawn
         assert browsers.get(1).findElement(By.id("6C")).isDisplayed();
@@ -1802,6 +1857,7 @@ public class AcceptanceTest {
 
         // P2 plays 6C
         browsers.get(1).findElement(By.id("6C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check top card and its players 3s turn
         for (int i = 0; i < 4; ++i){
@@ -1896,23 +1952,28 @@ public class AcceptanceTest {
 
         // P1 draws
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // picks up TC and plays it
         browsers.get(0).findElement(By.id("TC")).click();
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("TC")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("TH")).click();
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("TH")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(2).findElement(By.id("7H")).click();
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("7H")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(3).findElement(By.id("6H")).click();
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("6H")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         int counter = 0;
 
@@ -1925,12 +1986,14 @@ public class AcceptanceTest {
                     assert (browsers.get(j).findElement(By.id(cards.get(counter)[i])).getAttribute("class").contains("topCard"));
 
                 counter++;
+                TimeUnit.MILLISECONDS.sleep(1000);
             }
             counter = 0;
         }
 
         // P1 plays 2C
         browsers.get(0).findElement(By.id("2C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("2C")).getAttribute("class").contains("topCard"));
@@ -1941,8 +2004,11 @@ public class AcceptanceTest {
 
         // P2 draws 2 more cards
         browsers.get(1).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Verify 9H and 7S and 5H are drawn
         assert browsers.get(1).findElement(By.id("7S")).isDisplayed();
@@ -2044,23 +2110,28 @@ public class AcceptanceTest {
 
         // P1 draws
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // picks up TC and plays it
         browsers.get(0).findElement(By.id("TC")).click();
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("TC")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("TH")).click();
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("TH")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(2).findElement(By.id("7H")).click();
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("7H")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(3).findElement(By.id("5H")).click();
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("5H")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         int counter = 0;
 
@@ -2073,12 +2144,14 @@ public class AcceptanceTest {
                     assert (browsers.get(j).findElement(By.id(cards.get(counter)[i])).getAttribute("class").contains("topCard"));
 
                 counter++;
+                TimeUnit.MILLISECONDS.sleep(1000);
             }
             counter = 0;
         }
 
         // P1 plays 2C
         browsers.get(0).findElement(By.id("2C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("2C")).getAttribute("class").contains("topCard"));
@@ -2089,6 +2162,7 @@ public class AcceptanceTest {
 
         // P2 plays 2H
         browsers.get(1).findElement(By.id("2H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("2H")).getAttribute("class").contains("topCard"));
@@ -2101,6 +2175,7 @@ public class AcceptanceTest {
 
         // P3 plays 6H
         browsers.get(2).findElement(By.id("6H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check top card and its players 3s turn
         for (int i = 0; i < 4; ++i){
@@ -2175,6 +2250,7 @@ public class AcceptanceTest {
         String[] p4Hand = {"6S", "KS", "7C", "AH", "KD"};
 
         browsers.get(0).findElement(By.id("startBtn")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         ArrayList<String[]> cards = new ArrayList<>();
 
@@ -2207,24 +2283,29 @@ public class AcceptanceTest {
                     assert (browsers.get(j).findElement(By.id(cards.get(counter)[i])).getAttribute("class").contains("topCard"));
 
                 counter++;
-//                TimeUnit.MILLISECONDS.sleep(1000);
+                TimeUnit.MILLISECONDS.sleep(1000);
             }
             counter = 0;
         }
 
         // P1 plays 2C
         browsers.get(0).findElement(By.id("2C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("2C")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // P2 plays 4C and 4S
         browsers.get(1).findElement(By.id("4C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         for (int i = 0; i < 4; ++i)
             assert (browsers.get(i).findElement(By.id("4C")).getAttribute("class").contains("topCard"));
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(1).findElement(By.id("4S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
     }
 
     public void rigTestRow57(){
@@ -2284,6 +2365,7 @@ public class AcceptanceTest {
         String[] p4Hand = {"9C", "8S", "8C", "8D", "2D"}; // 8H CHANGE TO HEART AND SKIP P3
 
         browsers.get(0).findElement(By.id("startBtn")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         ArrayList<String[]> cards = new ArrayList<>();
 
@@ -2301,29 +2383,50 @@ public class AcceptanceTest {
         }
 
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("3C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("4C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("5C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("9C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(0).findElement(By.id("TC")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("QC")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("8S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("heart")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(0).findElement(By.id("3H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("QH")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("4H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(0).findElement(By.id("5H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("8H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("spade")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("5S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("QS")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Assert the cards in correct
         // p1
@@ -2345,6 +2448,7 @@ public class AcceptanceTest {
         assert browsers.get(3).findElement(By.id("2D")).isDisplayed();
 
         browsers.get(1).findElement(By.id("4S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Assert winner and scores for every player
         for (int i = 0; i < 4; ++i){
@@ -2354,6 +2458,7 @@ public class AcceptanceTest {
             assert (browsers.get(i).findElement(By.id("p3")).getText().contains("86"));
             assert (browsers.get(i).findElement(By.id("p4")).getText().contains("102"));
         }
+        TimeUnit.MILLISECONDS.sleep(1000);
     }
 
     public void rigTestRow62(){
@@ -2420,6 +2525,7 @@ public class AcceptanceTest {
         String[] p4Hand = {"7D", "JH", "QH", "KH", "5C"};
 
         browsers.get(0).findElement(By.id("startBtn")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         ArrayList<String[]> cards = new ArrayList<>();
 
@@ -2437,33 +2543,53 @@ public class AcceptanceTest {
         }
 
         browsers.get(0).findElement(By.id("4H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("4S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("9S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(0).findElement(By.id("7S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("6S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("6C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("2C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(0).findElement(By.id("JC")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("KC")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("9C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("3C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("7C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("8H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("diamond")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("JD")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("7D")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(0).findElement(By.id("9D")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("TD")).click();
-
-//        TimeUnit.MILLISECONDS.sleep(1000000);
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Assert winner and scores for every player
         for (int i = 0; i < 4; ++i){
@@ -2481,6 +2607,7 @@ public class AcceptanceTest {
         String[] p4Handr2 = {"4D", "7S", "4C", "5S", "8D"};
 
         browsers.get(1).findElement(By.id("startBtn")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Check initial top card
         for (int i = 0; i < 4; ++i){
@@ -2494,37 +2621,60 @@ public class AcceptanceTest {
             assert (browsers.get(2).findElement(By.id(p3Handr2[i])).isDisplayed());
             assert (browsers.get(3).findElement(By.id(p4Handr2[i])).isDisplayed());
         }
-//        TimeUnit.MILLISECONDS.sleep(1000000);
-
 
         browsers.get(1).findElement(By.id("9D")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("3D")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("4D")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(0).findElement(By.id("4S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("3S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("9S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("7S")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(0).findElement(By.id("7C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("9C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("3C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("4C")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(0).findElement(By.id("4H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("3H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(2).findElement(By.id("9H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(3).findElement(By.id("KH")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(0).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
         browsers.get(1).findElement(By.id("draw")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Assert the cards in correct
         // p1
@@ -2550,6 +2700,7 @@ public class AcceptanceTest {
         assert browsers.get(3).findElement(By.id("QS")).isDisplayed();
 
         browsers.get(2).findElement(By.id("5H")).click();
+        TimeUnit.MILLISECONDS.sleep(1000);
 
         // Assert winner and scores for every player
         for (int i = 0; i < 4; ++i){
@@ -2559,6 +2710,7 @@ public class AcceptanceTest {
             assert (browsers.get(i).findElement(By.id("p3")).getText().contains("3"));
             assert (browsers.get(i).findElement(By.id("p4")).getText().contains("114"));
         }
+        TimeUnit.MILLISECONDS.sleep(1000);
     }
 
     public void rigTestRow64R1(){
